@@ -12,8 +12,15 @@ class RayTracer {
     private static Vector lightColor = new Vector(1.0, 1.0, 1.0);
     
     static void Main() {
-        double aspectRatio = 16.0 / 9.0;
-        int width = 400;
+        Scene scene = new Scene();
+        scene.AddLight(dirToLight, ambient, lightColor);
+        scene.SetBG(bgColor);
+        
+        Sphere purpleSphere = new Sphere(0.5);
+        scene.AddSphere(purpleSphere);
+
+        double aspectRatio = 1.0;
+        int width = 1000;
 
         // Find image height using aspect ratio.
         int height = (int) (width / aspectRatio);
@@ -51,11 +58,11 @@ class RayTracer {
             Console.Out.Flush();
 
             for (int j = 0; j < width; ++j) {
-                var pixelCenter = startPixel + (i * du) + (j * dv);
+                var pixelCenter = startPixel + (i * dv) + (j * du);
                 var rayDirection = pixelCenter - camCenter;
 
                 Ray ray = new Ray(camCenter, rayDirection);
-                Vector pixelColor = GetRayColor(ray);
+                Vector pixelColor = GetRayColor(ray, scene);
 
                 writer.WriteRGB(pixelColor);
             }
@@ -67,7 +74,14 @@ class RayTracer {
         Console.WriteLine("\nDone         \n");
     }
 
-    private static Vector GetRayColor(Ray ray) {
-        return bgColor;
+    public static Vector GetRayColor(Ray ray, Scene scene) {
+        Vector color = scene.GetBG();
+        foreach (Sphere sphere in scene.GetSpheres()) {
+            Vector? point = ray.SphereIntersection(sphere);
+            if (point != null) {
+                return new Vector(0, 0, 255);
+            }
+        }
+        return color;
     }
 }
