@@ -15,12 +15,32 @@ public class Vector {
         z = vector.z;
     }
 
+    public void Normalize() {
+        Vector unit = UnitVector();
+        x = unit.x;
+        y = unit.y;
+        z = unit.z;
+    }
+
+    public double Length() {
+        return Math.Sqrt(x * x + y * y + z * z);
+    }
+
+    public Vector UnitVector() {
+        double length = Length();
+        return length > 0 ? new Vector(x / length, y / length, z / length) : new Vector(0, 0, 0);
+    }
+
     public static Vector operator -(Vector v) {
         return new Vector(-v.x, -v.y, -v.z);
     }
 
     public static Vector operator +(Vector v1, Vector v2) {
         return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+    }
+
+    public static Vector operator /(Vector v, double t) {
+        return new Vector(v.x / (float)t, v.y / (float)t, v.z / (float)t);
     }
 
     public static Vector operator *(Vector v, double t) {
