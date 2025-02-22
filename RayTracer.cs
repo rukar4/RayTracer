@@ -2,25 +2,71 @@
 using System.Diagnostics.Contracts;
 using System.IO;
 
-class RayTracer {
-    // Light Vectors
-    private static Vector dirToLight = new Vector(0.0, 1.0, 0.0);
-    private static Vector ambient = new Vector(0.0, 0.0, 0.0);
-
-    // Color vectors
-    private static Vector bgColor = new Vector(0.2, 0.2, 0.2);
-    private static Vector lightColor = new Vector(1.0, 1.0, 1.0);
-    
+class RayTracer {    
     static void Main() {
-        Scene scene = new Scene();
-        scene.AddLight(dirToLight, ambient, lightColor);
-        scene.SetBG(bgColor);
+        Vector bgColor = new Vector(0.2, 0.2, 0.2);
+
+        // Scene 1 Code
+        Scene scene1 = new Scene("scene_1.ppm");
+        scene1.SetLight(
+            new Vector(0.0, 1.0, 0.0), 
+            new Vector(0.0, 0.0, 0.0), 
+            new Vector(1.0, 1.0, 1.0)
+        );
+        scene1.SetBG(bgColor);
         
-        Sphere purpleSphere = new Sphere(0.5);
-        scene.AddSphere(purpleSphere);
+        Sphere purpleSphere = new Sphere(0.4);
+        purpleSphere.SetColor(
+            0.7, 0.2, 0.1, 16.0,
+            new Vector(1.0, 0.0, 1.0), 
+            new Vector(1.0, 1.0, 1.0)
+        );
+        
+        scene1.AddSphere(purpleSphere);
+
+        // Scene 2 Code
+        Scene scene2 = new Scene("scene_2.ppm");
+        scene2.SetLight(
+            new Vector(1.0, 1.0, 1.0), 
+            new Vector(0.1, 0.1, 0.1),
+            new Vector(1.0, 1.0, 1.0)
+        );
+        scene2.SetBG(bgColor);
+
+        Sphere whiteSphere = new Sphere(0.15, 0.45, 0.0, -0.15);
+        whiteSphere.SetColor(
+            0.8, 0.1, 0.3, 4.0,
+            new Vector(1.0, 1.0, 1.0), 
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        Sphere redSphere = new Sphere(0.2, 0.0, 0.0, -0.1);
+        redSphere.SetColor(
+            0.6, 0.3, 0.1, 32.0,
+            new Vector(1.0, 0.0, 0.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        Sphere greenSphere = new Sphere(0.3, -0.6, 0.0, 0.0);
+        greenSphere.SetColor(
+            0.7, 0.2, 0.1, 64.0,
+            new Vector(0.0, 1.0, 0.0),
+            new Vector(0.5, 1.0, 0.5)
+        );
+
+        Sphere blueSphere = new Sphere(10000.0, 0.0, -10000.5, 0.0);
+        blueSphere.SetColor(
+            0.9, 0.0, 0.1, 16.0,
+            new Vector(0.0, 0.0, 1.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        scene2.AddSpheres(new List<Sphere> { whiteSphere, redSphere, greenSphere, blueSphere });
+
+        List<Scene> scenes = [scene1, scene2];
 
         double aspectRatio = 1.0;
-        int width = 1000;
+        int width = 1080;
 
         // Find image height using aspect ratio.
         int height = (int) (width / aspectRatio);
@@ -31,7 +77,7 @@ class RayTracer {
 
         // Compute viewport size
         double viewportHeight = 2.0 * Math.Tan(fov * Math.PI / 180.0 / 2);
-        double viewportWidth = viewportHeight * ((double) width / height);
+        double viewportWidth = viewportHeight;
 
         // Camera variables
         double focalLength = 1.0;
@@ -52,34 +98,36 @@ class RayTracer {
         Vector viewPortUpperLeft = camCenter - new Vector(0, 0, focalLength) - viewportU / 2 - viewportV / 2;
         Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
 
-        PPMWriter writer = new PPMWriter("sphere.ppm", height, width);
-        for (int i = 0; i < height; ++i) {
-            Console.Write($"\rScanlines remaining: {height - i} ");
-            Console.Out.Flush();
+        foreach (Scene scene in scenes) {
+            PPMWriter writer = new PPMWriter(scene.GetFileName(), height, width);
+            for (int i = 0; i < height; ++i) {
+                Console.Write($"\rScanlines remaining: {height - i} ");
+                Console.Out.Flush();
 
-            for (int j = 0; j < width; ++j) {
-                var pixelCenter = startPixel + (i * dv) + (j * du);
-                var rayDirection = pixelCenter - camCenter;
+                for (int j = 0; j < width; ++j) {
+                    var pixelCenter = startPixel + (i * dv) + (j * du);
+                    var rayDirection = pixelCenter - camCenter;
 
-                Ray ray = new Ray(camCenter, rayDirection);
-                Vector pixelColor = GetRayColor(ray, scene);
+                    Ray ray = new Ray(camCenter, rayDirection);
+                    Vector pixelColor = GetRayColor(ray, scene, camCenter);
 
-                writer.WriteRGB(pixelColor);
+                    writer.WriteRGB(pixelColor);
+                }
+
+                writer.WriteLine();
             }
+            writer.Dispose();
 
-            writer.WriteLine();
+            Console.WriteLine("\nDone         \n");
         }
-        writer.Dispose();
-
-        Console.WriteLine("\nDone         \n");
     }
 
-    public static Vector GetRayColor(Ray ray, Scene scene) {
+    public static Vector GetRayColor(Ray ray, Scene scene, Vector camCenter) {
         Vector color = scene.GetBG();
         foreach (Sphere sphere in scene.GetSpheres()) {
             Vector? point = ray.SphereIntersection(sphere);
             if (point != null) {
-                return new Vector(0, 0, 255);
+                return sphere.GetSurfaceColor(point, camCenter, scene);
             }
         }
         return color;

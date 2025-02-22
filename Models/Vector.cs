@@ -35,9 +35,13 @@ public class Vector {
         return length > 0 ? new Vector(x / length, y / length, z / length) : new Vector(0, 0, 0);
     }
 
-    // Dot product method
     public double Dot(Vector v) {
         return x * v.x + y * v.y + z * v.z;
+    }
+
+    public Vector Reflect(Vector normal) {
+        double dotProduct = Dot(normal);
+        return this - normal * (2 * dotProduct);
     }
 
     public static Vector operator -(Vector v) {
@@ -70,6 +74,10 @@ public class Vector {
 
     public static Vector operator /(Vector v, double t) {
         return new Vector(v.x / (float)t, v.y / (float)t, v.z / (float)t);
+    }
+
+    public static Vector operator *(Vector v1, Vector v2) {
+        return new Vector(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
     }
 
     public static Vector operator *(Vector v, double t) {
