@@ -63,7 +63,46 @@ class RayTracer {
 
         scene2.AddSpheres(new List<Sphere> { whiteSphere, redSphere, greenSphere, blueSphere });
 
-        List<Scene> scenes = [scene1, scene2];
+        Scene scene3 = new Scene("scene_3.ppm");
+        scene3.SetLight(
+            new Vector(10.0, 10.0, -5.0), 
+            new Vector(0.1, 0.1, 0.1),
+            new Vector(1.0, 1.0, 1.0)
+        );
+        scene3.SetBG(new Vector());
+
+        Sphere mars = new Sphere(0.35, -0.3, -0.3, 0.5);
+        mars.SetColor(
+            0.7, 0.2, 0.5, 3.0,
+            new Vector(0.9, 0.3, 0.1),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        Sphere earth = new Sphere(0.4, 0.3, -0.1, 0.0);
+        earth.SetColor(
+            0.8, 0.5, 0.6, 64.0,
+            new Vector(0.0, 0.0, 1.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        Sphere venus = new Sphere(0.3, -0.1, 0.55, -0.4);
+        venus.SetColor(
+            0.5, 0.1, 0.8, 4.0,
+            new Vector(0.9, 0.85, 0.75), 
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        Sphere mercury = new Sphere(0.25, 0.65, 0.8, -0.55);
+        mercury.SetColor(
+            0.8, 0.1, 0.9, 4.0,
+            new Vector(0.6, 0.4, 0.2),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        scene3.AddSpheres(new List<Sphere> { mars, earth, venus, mercury });
+        
+
+        List<Scene> scenes = [scene1, scene2, scene3];
 
         double aspectRatio = 1.0;
         int width = 1080;
