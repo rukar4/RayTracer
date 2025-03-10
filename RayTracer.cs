@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.IO;
+using Models.Props;
 
 class RayTracer {    
     static void Main() {
@@ -22,7 +23,7 @@ class RayTracer {
             new Vector(1.0, 1.0, 1.0)
         );
         
-        scene1.AddSphere(purpleSphere);
+        scene1.AddProp(purpleSphere);
 
         // Scene 2 Code
         Scene scene2 = new Scene("scene_2.ppm");
@@ -61,7 +62,7 @@ class RayTracer {
             new Vector(1.0, 1.0, 1.0)
         );
 
-        scene2.AddSpheres(new List<Sphere> { whiteSphere, redSphere, greenSphere, blueSphere });
+        scene2.AddProps(new List<Prop> { blueSphere, whiteSphere, redSphere, greenSphere });
 
         Scene scene3 = new Scene("scene_3.ppm");
         scene3.SetLight(
@@ -99,10 +100,9 @@ class RayTracer {
             new Vector(1.0, 1.0, 1.0)
         );
 
-        scene3.AddSpheres(new List<Sphere> { mars, earth, venus, mercury });
-        
+        scene3.AddProps(new List<Prop> { mars, earth, venus, mercury });
 
-        List<Scene> scenes = [scene1, scene2, scene3];
+        List<Scene> scenes = [scene2];
 
         double aspectRatio = 1.0;
         int width = 1080;
@@ -148,7 +148,7 @@ class RayTracer {
                     var rayDirection = pixelCenter - camCenter;
 
                     Ray ray = new Ray(camCenter, rayDirection);
-                    Vector pixelColor = GetRayColor(ray, scene, camCenter);
+                    Vector pixelColor = GetPixel(ray, scene, camCenter);
 
                     writer.WriteRGB(pixelColor);
                 }
@@ -161,12 +161,19 @@ class RayTracer {
         }
     }
 
-    public static Vector GetRayColor(Ray ray, Scene scene, Vector camCenter) {
+    public static Vector GetPixel(Ray ray, Scene scene, Vector camCenter) {
         Vector color = scene.GetBG();
-        foreach (Sphere sphere in scene.GetSpheres()) {
-            Vector? point = ray.SphereIntersection(sphere);
+        
+        double closest = double.MaxValue;
+        foreach (Prop prop in scene.GetProps()) {
+            Vector? point = prop.GetIntersection(ray);
             if (point != null) {
-                return sphere.GetSurfaceColor(point, camCenter, scene);
+                double distance = (point - ray.origin).Magnitude();
+
+                if (distance < closest) {
+                    closest = distance;
+                    color = prop.GetSurfaceColor(point, camCenter, scene);
+                }
             }
         }
         return color;

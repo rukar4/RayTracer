@@ -22,6 +22,10 @@ public class Vector {
         z = unit.z;
     }
 
+    public double Magnitude() {
+        return Math.Sqrt(x * x + y * y + z * z);
+    }
+
     public double Length() {
         return Math.Sqrt(x * x + y * y + z * z);
     }
@@ -37,6 +41,14 @@ public class Vector {
 
     public double Dot(Vector v) {
         return x * v.x + y * v.y + z * v.z;
+    }
+
+    public Vector Cross(Vector v) {
+        return new Vector(
+            this.y * v.z - this.z * v.y,
+            this.z * v.x - this.x * v.z,
+            this.x * v.y - this.y * v.x
+        );
     }
 
     public Vector Reflect(Vector normal) {

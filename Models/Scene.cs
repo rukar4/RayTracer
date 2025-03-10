@@ -1,3 +1,5 @@
+using Models.Props;
+
 public class Scene {
     // Lighting and Color
     Vector dirToLight = new Vector();
@@ -7,7 +9,8 @@ public class Scene {
     string fileName;
 
     // Objects
-    List<Sphere> spheres = new();
+    List<Prop> props = new();
+
     public Scene(string outputFile = "scene.ppm") {
         fileName = outputFile;
     }
@@ -62,15 +65,15 @@ public class Scene {
         return 2 * normal * nl - dirToLight;
     }
 
-    public void AddSphere(Sphere sphere) {
-        spheres.Add(sphere);
+    public void AddProp(Prop prop) {
+        props.Add(prop);
     }
 
-    public void AddSpheres(IList<Sphere> newSpheres) {
-        spheres.AddRange(newSpheres);
+    public void AddProps(IList<Prop> props) {
+        this.props.AddRange(props);
     }
 
-    public List<Sphere> GetSpheres() {
-        return spheres;
+    public List<Prop> GetProps() {
+        return props;
     }
 }
