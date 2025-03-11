@@ -27,14 +27,6 @@ namespace Models.Props {
         public Vector GetSurfaceColor(Vector point, Vector origin, Scene scene, int depth = 0) {
             Vector L = scene.GetLightDir();
             
-            // Detect if the point is in shadow
-            Ray shadowRay = new Ray(point, L);
-            foreach (Prop prop in scene.GetProps()) {
-                if (prop != this && prop.GetIntersection(shadowRay) != null) {
-                    return new Vector();
-                }
-            }
-
             Vector N = GetNormal(point);
             Vector R = scene.LightReflection(N);
             Vector V = (origin - point).UnitVector();
@@ -42,6 +34,14 @@ namespace Models.Props {
             Vector color = Ka * scene.GetAmbientColor() * Od + 
                     Kd * scene.GetLightColor() * Od * Math.Max(0, N.Dot(L)) + 
                     Ks * scene.GetLightColor() * Os * Math.Pow(Math.Max(0, R.Dot(V)), Kgls);
+
+            // Detect if the point is in shadow
+            Ray shadowRay = new Ray(point, L);
+            foreach (Prop prop in scene.GetProps()) {
+                if (prop != this && prop.GetIntersection(shadowRay) != null) {
+                    return color * 0.5;
+                }
+            }
 
             if (Refl == 0 || depth == MAX_DEPTH) {
                 return color;

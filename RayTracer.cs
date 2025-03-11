@@ -52,7 +52,7 @@ class RayTracer {
 
         scene5.AddProps(new List<Prop> { whiteSphere, redSphere, grnSphere, reflSphr2, bluTri2, yelTri2 });
 
-        List<Scene> scenes = [scene5];
+        List<Scene> scenes = [scene4, scene5];
 
         double aspectRatio = 1.0;
         int width = 1080;
