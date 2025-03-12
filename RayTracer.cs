@@ -8,6 +8,7 @@ class RayTracer {
         Vector green = new Vector(0.0, 1.0, 0.0);
         Vector blue = new Vector(0.0, 0.0, 1.0);
         Vector yellow = new Vector(1.0, 1.0, 0.0);
+        Vector barkBrown = new Vector(0.361, 0.2, 0.09);
 
         // Program 6 Scene 1
         Scene scene4 = new Scene("scene_4.ppm");
@@ -52,7 +53,41 @@ class RayTracer {
 
         scene5.AddProps(new List<Prop> { whiteSphere, redSphere, grnSphere, reflSphr2, bluTri2, yelTri2 });
 
-        List<Scene> scenes = [scene4, scene5];
+        Scene scene6 = new Scene("scene_6.ppm");
+        scene6.SetLight(new Vector(0.0, 0.5, 1.0), new Vector(0.1, 0.1, 0.1), white);
+        scene6.SetBG(bgColor);
+
+        // Triangle reflTri1 = new Triangle(new Vector(0.0, -0.5, 0.25), new Vector(1.6, 0.2, -1.5), new Vector(0.0, -0.25, -1.0));
+        // reflTri1.SetColor(0.0, 0.1, 0.1, 10.0, new Vector(0.75, 0.75, 0.75), white);
+        // reflTri1.SetRefl(0.9);
+
+        // Triangle reflTri2 = new Triangle(new Vector(0.0, -0.5, 0.25), new Vector(-1.6, 0.2, -1.5), new Vector(0.0, -0.25, -1.0));
+        // reflTri2.SetColor(0.0, 0.1, 0.1, 10.0, new Vector(0.75, 0.75, 0.75), white);
+        // reflTri2.SetRefl(0.9);
+
+        Triangle reflTri3 = new Triangle(new Vector(0.0, -0.5, 0.25), new Vector(-1.6, 0.2, -1.5), new Vector(1.6, 0.2, -1.5));
+        reflTri3.SetColor(0.0, 0.1, 0.1, 10.0, new Vector(0.75, 0.75, 0.75), white);
+        reflTri3.SetRefl(0.9);
+
+        Sphere brnSph = new Sphere(0.2, 0.0, 0.8, -0.3);
+        brnSph.SetColor(0.7, 0.5, 0.1, 64.0, barkBrown, white);
+
+        Sphere grnSph2 = new Sphere(0.2, 0.0, -0.15, -0.3);
+        grnSph2.SetColor(0.7, 0.5, 0.1, 2.0, green, white);
+
+        Sphere bluSph2 = new Sphere(0.2, -0.3, 0.1, -0.5);
+        bluSph2.SetColor(0.9, 1.0, 0.1, 4.0, blue, white);
+
+        Sphere redSph2 = new Sphere(0.2, 0.3, 0.1, -0.5);
+        redSph2.SetColor(0.8, 0.8, 0.1, 32.0, red, white);
+
+        Sphere reflSphr3 = new Sphere(0.2, 0.0, 0.25, -0.3);
+        reflSphr3.SetColor(0.0, 0.1, 0.1, 10.0, new Vector(0.75, 0.75, 0.75), white);
+        reflSphr3.SetRefl(0.9);
+
+        scene6.AddProps(new List<Prop> { reflTri3, brnSph, bluSph2, redSph2, reflSphr3, grnSph2 });
+        
+        List<Scene> scenes = [scene4, scene5, scene6];
 
         double aspectRatio = 1.0;
         int width = 1080;

@@ -1,7 +1,7 @@
 namespace Models.Props {
 
     public abstract class Prop {
-        protected int MAX_DEPTH = 3;
+        protected int MAX_DEPTH = 5;
 
         protected double Kd = 0.0, Ks = 0.0, Ka = 0.0, Kgls = 0.0, Refl = 0.0;
         protected Vector Od = new Vector(0, 0, 0);
@@ -39,7 +39,8 @@ namespace Models.Props {
             Ray shadowRay = new Ray(point, L);
             foreach (Prop prop in scene.GetProps()) {
                 if (prop != this && prop.GetIntersection(shadowRay) != null) {
-                    return color * 0.5;
+                    color *= 0.5;
+                    break;
                 }
             }
 
@@ -48,7 +49,7 @@ namespace Models.Props {
             } else {
                 Vector reflColor = scene.GetBG();
                 Vector reflDir = -V.Reflect(N).UnitVector();
-                Ray reflRay = new Ray(point + reflDir * 0.001, reflDir);
+                Ray reflRay = new Ray(point, reflDir);
 
                 Vector? closestInter = null;
                 Prop? closestProp = null;
