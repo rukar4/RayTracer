@@ -23,9 +23,9 @@ public static class SceneParser
 
         Prop? currentProp = null;
 
-        foreach (string rawLine in lines)
+        for (int i = 0; i < lines.Length; ++i)
         {
-            string line = rawLine.Trim();
+            string line = lines[i].Trim();
 
             if (line == "" || line.StartsWith("#"))
             {
@@ -79,6 +79,18 @@ public static class SceneParser
                         props.Add(currentProp);
                     }
                     currentProp = new Sphere();
+                    break;
+
+                case "Triangle":
+                    Vector v0 = ParseVector(lines[++i].Trim().Split(), 0);
+                    Vector v1 = ParseVector(lines[++i].Trim().Split(), 0);
+                    Vector v2 = ParseVector(lines[++i].Trim().Split(), 0);
+
+                    if (currentProp != null)
+                    {
+                        props.Add(currentProp);
+                    }
+                    currentProp = new Triangle(v0, v1, v2);
                     break;
 
                 case "Center":
@@ -147,12 +159,12 @@ public static class SceneParser
         return scene;
     }
 
-    private static Vector ParseVector(string[] tokens)
+    private static Vector ParseVector(string[] tokens, int offset = 1)
     {
         return new Vector(
-            double.Parse(tokens[1]),
-            double.Parse(tokens[2]),
-            double.Parse(tokens[3])
+            double.Parse(tokens[offset]),
+            double.Parse(tokens[offset + 1]),
+            double.Parse(tokens[offset + 2])
         );
     }
 }

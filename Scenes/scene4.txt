@@ -1,6 +1,8 @@
-CameraLookAt 0 0 0
-CameraLookFrom 0 0 1
-CameraLookUp 0 1 0
+OutputFile scene_4.ppm
+
+CameraDirection 0 0 0
+CameraCenter 0 0 1
+CameraUp 0 1 0
 FieldOfView 90
 
 DirectionToLight 0.0 1.0 0.0
