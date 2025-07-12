@@ -2,15 +2,28 @@ using Models.Props;
 
 public class Sphere : Prop {
     // Geometry
-    protected readonly double r;
-    protected readonly Vector center;
+    protected double r;
+    protected Vector center;
 
-    public Sphere(double r, double x = 0, double y = 0, double z = 0) {
+    public Sphere(double r = 1.0, double x = 0, double y = 0, double z = 0) {
         this.r = r;
         center = new Vector(x, y, z);
     }
 
-    public override Vector GetNormal(Vector point) {
+    public double R
+    {
+        get => r;
+        set => r = value;
+    }
+
+    public Vector Center
+    {
+        get => center;
+        set => center = value;
+    }
+
+    public override Vector GetNormal(Vector point)
+    {
         return (point - center).UnitVector();
     }
 

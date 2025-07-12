@@ -1,68 +1,65 @@
-namespace Models.Props {
+namespace Models.Props
+{
 
-    public abstract class Prop {
+    public abstract class Prop
+    {
         protected int MAX_DEPTH = 5;
 
-        protected double Kd = 0.0, Ks = 0.0, Ka = 0.0, Kgls = 0.0, Refl = 0.0;
-        protected Vector Od = new Vector(0, 0, 0);
-        protected Vector Os = new Vector(1.0, 1.0, 1.0);
-    
-        public void SetColor(double Kd, double Ks, double Ka, double Kgls, Vector Od, Vector Os) {
-            this.Kd = Kd;
-            this.Ks = Ks;
-            this.Ka = Ka;
-            this.Od = Od;
-            this.Os = Os;
-            this.Kgls = Kgls;
-        }
+        protected double kd = 0.0, ks = 0.0, ka = 0.0, kgls = 0.0, refl = 0.0;
+        protected Vector od = new Vector(0, 0, 0);  // Diffuse color
+        protected Vector os = new Vector(1.0, 1.0, 1.0);  // Specular color
 
-        public void SetRefl(double Refl) {
-            this.Refl = Refl;
-        }
+        public abstract Vector GetNormal(Vector point);
+        public abstract Vector? GetIntersection(Ray ray);
 
-        public double GetRefl() {
-            return Refl;
-        }
-
-        public Vector GetSurfaceColor(Vector point, Vector origin, Scene scene, int depth = 0) {
+        public Vector GetSurfaceColor(Vector point, Vector origin, Scene scene, int depth = 0)
+        {
             Vector L = scene.GetLightDir();
-            
+
             Vector N = GetNormal(point);
             Vector R = scene.LightReflection(N);
             Vector V = (origin - point).UnitVector();
 
-            Vector color = Ka * scene.GetAmbientColor() * Od + 
-                    Kd * scene.GetLightColor() * Od * Math.Max(0, N.Dot(L)) + 
-                    Ks * scene.GetLightColor() * Os * Math.Pow(Math.Max(0, R.Dot(V)), Kgls);
+            Vector color =
+                ka * scene.GetAmbientColor() * od +
+                kd * scene.GetLightColor() * od * Math.Max(0, N.Dot(L)) +
+                ks * scene.GetLightColor() * os * Math.Pow(Math.Max(0, R.Dot(V)), kgls);
 
-            // Detect if the point is in shadow
+            // Shadow detection
             Ray shadowRay = new Ray(point, L);
-            foreach (Prop prop in scene.GetProps()) {
-                if (prop != this && prop.GetIntersection(shadowRay) != null) {
+            foreach (Prop prop in scene.GetProps())
+            {
+                if (prop != this && prop.GetIntersection(shadowRay) != null)
+                {
                     color *= 0.5;
                     break;
                 }
             }
 
-            if (Refl == 0 || depth == MAX_DEPTH) {
+            if (refl == 0 || depth == MAX_DEPTH)
+            {
                 return color;
-            } else {
+            }
+            else
+            {
                 Vector reflColor = scene.GetBG();
                 Vector reflDir = -V.Reflect(N).UnitVector();
                 Ray reflRay = new Ray(point, reflDir);
 
                 Vector? closestInter = null;
                 Prop? closestProp = null;
-
                 double closest = double.MaxValue;
-                foreach (Prop prop in scene.GetProps()) {
-                    if (prop != this) {
+
+                foreach (Prop prop in scene.GetProps())
+                {
+                    if (prop != this)
+                    {
                         Vector? intersection = prop.GetIntersection(reflRay);
-
-                        if (intersection != null) {
+                        if (intersection != null)
+                        {
                             double distance = (intersection - point).Magnitude();
-
-                            if (distance < closest) {
+                            if (distance < closest)
+                            {
                                 closest = distance;
                                 closestInter = intersection;
                                 closestProp = prop;
@@ -70,16 +67,68 @@ namespace Models.Props {
                         }
                     }
                 }
-                
-                if (closestInter != null && closestProp != null) {
+
+                if (closestInter != null && closestProp != null)
+                {
                     reflColor = closestProp.GetSurfaceColor(closestInter, reflRay.origin, scene, depth + 1);
                 }
 
-                return color + reflColor * Refl;
+                return color + reflColor * refl;
             }
         }
-    
-        public abstract Vector GetNormal(Vector point);
-        public abstract Vector? GetIntersection(Ray ray);
+
+        // Set all color properties at once
+        public void SetColor(double kd, double ks, double ka, double kgls, Vector od, Vector os)
+        {
+            this.kd = kd;
+            this.ks = ks;
+            this.ka = ka;
+            this.kgls = kgls;
+            this.od = od;
+            this.os = os;
+        }
+
+        // Individual getters/setters
+        public double Kd
+        {
+            get => kd;
+            set => kd = value;
+        }
+
+        public double Ks
+        {
+            get => ks;
+            set => ks = value;
+        }
+
+        public double Ka
+        {
+            get => ka;
+            set => ka = value;
+        }
+
+        public double Kgls
+        {
+            get => kgls;
+            set => kgls = value;
+        }
+
+        public double Refl
+        {
+            get => refl;
+            set => refl = value;
+        }
+
+        public Vector Od
+        {
+            get => od;
+            set => od = value;
+        }
+
+        public Vector Os
+        {
+            get => os;
+            set => os = value;
+        }
     }
 }

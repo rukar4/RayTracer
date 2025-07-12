@@ -12,7 +12,7 @@ class RayTracer
 
     static void Main()
     {
-        Scene scene1 = GetScene1();
+        Scene scene1 = SceneParser.Parse("Scenes/scene1.txt");
         List<Scene> scenes = [scene1];
 
         double aspectRatio = 1.0;
@@ -42,7 +42,7 @@ class RayTracer
             Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
 
             // Intialize writer
-            PPMWriter writer = new PPMWriter($"Scenes/images/{scene.GetFileName()}", height, width);
+            PPMWriter writer = new PPMWriter($"res/{scene.GetFileName()}", height, width);
             for (int i = 0; i < height; ++i)
             {
                 Console.Write($"\rScanlines remaining: {height - i} ");
