@@ -12,8 +12,116 @@ class RayTracer
 
     static void Main()
     {
+        Scene scene1 = GetScene1();
+        List<Scene> scenes = [scene1];
 
-        // Program 6 Scene 1
+        double aspectRatio = 1.0;
+        int width = 1080;
+
+        // Find image height using aspect ratio.
+        int height = (int)(width / aspectRatio);
+        height = height < 1 ? 1 : height;
+
+
+        foreach (Scene scene in scenes)
+        {
+            // Compute viewport size
+            double viewportHeight = 2.0 * Math.Tan(scene.fov * Math.PI / 180.0 / 2);
+            double viewportWidth = viewportHeight;
+
+            // Viewport vectors
+            Vector viewportU = new Vector(viewportWidth, 0, 0);
+            Vector viewportV = new Vector(0, -viewportHeight, 0);
+
+            // Pixel sizes
+            Vector du = viewportU / width;
+            Vector dv = viewportV / height;
+
+            // Compute upper left pixel
+            Vector viewPortUpperLeft = scene.camCenter - new Vector(0, 0, scene.focalLength) - viewportU / 2 - viewportV / 2;
+            Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
+
+            // Intialize writer
+            PPMWriter writer = new PPMWriter($"Scenes/images/{scene.GetFileName()}", height, width);
+            for (int i = 0; i < height; ++i)
+            {
+                Console.Write($"\rScanlines remaining: {height - i} ");
+                Console.Out.Flush();
+
+                for (int j = 0; j < width; ++j)
+                {
+                    var pixelCenter = startPixel + (i * dv) + (j * du);
+                    var rayDirection = pixelCenter - scene.camCenter;
+
+                    Ray ray = new Ray(scene.camCenter, rayDirection);
+                    Vector pixelColor = GetPixel(ray, scene, scene.camCenter);
+
+                    writer.WriteRGB(pixelColor);
+                }
+
+                writer.WriteLine();
+            }
+            writer.Dispose();
+
+            Console.WriteLine("\nDone         \n");
+        }
+    }
+
+    private static Vector GetPixel(Ray ray, Scene scene, Vector camCenter)
+    {
+        Vector color = scene.GetBG();
+
+        double closest = double.MaxValue;
+        foreach (Prop prop in scene.GetProps())
+        {
+            Vector? point = prop.GetIntersection(ray);
+            if (point != null)
+            {
+                double distance = (point - ray.origin).Magnitude();
+
+                if (distance < closest)
+                {
+                    closest = distance;
+                    color = prop.GetSurfaceColor(point, camCenter, scene);
+                }
+            }
+        }
+        return color;
+    }
+
+    // Scenes
+    private static Scene GetScene1()
+    {
+        // Scene 1 Code
+        Scene scene1 = new Scene(
+            new Vector(),
+            new Vector(0.0, 0.0, 1.0),
+            new Vector(0.0, 1.0, 0.0),
+            90.0,
+            "scene_1.ppm"
+        );
+
+        scene1.SetLight(
+            new Vector(0.0, 1.0, 0.0),
+            new Vector(0.0, 0.0, 0.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+        scene1.SetBG(bgColor);
+
+        Sphere purpleSphere = new Sphere(0.4);
+        purpleSphere.SetColor(
+            0.7, 0.2, 0.1, 16.0,
+            new Vector(1.0, 0.0, 1.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        scene1.AddProp(purpleSphere);
+        return scene1;
+    }
+}
+
+/*
+// Program 6 Scene 1
         Scene scene4 = new Scene("scene_4.ppm");
         scene4.SetLight(new Vector(0.0, 1.0, 0.0), new Vector(), white);
         scene4.SetBG(bgColor);
@@ -89,114 +197,7 @@ class RayTracer
         reflSphr3.SetRefl(0.9);
 
         scene6.AddProps(new List<Prop> { reflTri3, brnSph, bluSph2, redSph2, reflSphr3, grnSph2 });
-
-        Scene scene1 = GetScene1();
-        List<Scene> scenes = [scene1, scene4, scene5, scene6];
-
-        double aspectRatio = 1.0;
-        int width = 1080;
-
-        // Find image height using aspect ratio.
-        int height = (int)(width / aspectRatio);
-        height = height < 1 ? 1 : height;
-
-        // Field of View
-        double fov = 90.0;
-
-        // Compute viewport size
-        double viewportHeight = 2.0 * Math.Tan(fov * Math.PI / 180.0 / 2);
-        double viewportWidth = viewportHeight;
-
-        // Camera variables
-        double focalLength = 1.0;
-        Vector camDir = new Vector(0, 0, 0);
-        Vector camCenter = new Vector(0, 0, 1);
-        Vector camUp = new Vector(0, 1, 0);
-
-        // Viewport vectors
-        Vector viewportU = new Vector(viewportWidth, 0, 0);
-        Vector viewportV = new Vector(0, -viewportHeight, 0);
-
-        // Pixel sizes
-        Vector du = viewportU / width;
-        Vector dv = viewportV / height;
-
-        // Compute upper left pixel
-        Vector viewPortUpperLeft = camCenter - new Vector(0, 0, focalLength) - viewportU / 2 - viewportV / 2;
-        Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
-
-        foreach (Scene scene in scenes)
-        {
-            PPMWriter writer = new PPMWriter($"Scenes/images/{scene.GetFileName()}", height, width);
-            for (int i = 0; i < height; ++i)
-            {
-                Console.Write($"\rScanlines remaining: {height - i} ");
-                Console.Out.Flush();
-
-                for (int j = 0; j < width; ++j)
-                {
-                    var pixelCenter = startPixel + (i * dv) + (j * du);
-                    var rayDirection = pixelCenter - camCenter;
-
-                    Ray ray = new Ray(camCenter, rayDirection);
-                    Vector pixelColor = GetPixel(ray, scene, camCenter);
-
-                    writer.WriteRGB(pixelColor);
-                }
-
-                writer.WriteLine();
-            }
-            writer.Dispose();
-
-            Console.WriteLine("\nDone         \n");
-        }
-    }
-
-    private static Vector GetPixel(Ray ray, Scene scene, Vector camCenter)
-    {
-        Vector color = scene.GetBG();
-
-        double closest = double.MaxValue;
-        foreach (Prop prop in scene.GetProps())
-        {
-            Vector? point = prop.GetIntersection(ray);
-            if (point != null)
-            {
-                double distance = (point - ray.origin).Magnitude();
-
-                if (distance < closest)
-                {
-                    closest = distance;
-                    color = prop.GetSurfaceColor(point, camCenter, scene);
-                }
-            }
-        }
-        return color;
-    }
-
-    // Scenes
-    private static Scene GetScene1()
-    {
-        // Scene 1 Code
-        Scene scene1 = new Scene("scene_1.ppm");
-        scene1.SetLight(
-            new Vector(0.0, 1.0, 0.0),
-            new Vector(0.0, 0.0, 0.0),
-            new Vector(1.0, 1.0, 1.0)
-        );
-        scene1.SetBG(bgColor);
-
-        Sphere purpleSphere = new Sphere(0.4);
-        purpleSphere.SetColor(
-            0.7, 0.2, 0.1, 16.0,
-            new Vector(1.0, 0.0, 1.0),
-            new Vector(1.0, 1.0, 1.0)
-        );
-
-        scene1.AddProp(purpleSphere);
-        return scene1;
-    }
-}
+*/
 
 // Project 5 Code
 

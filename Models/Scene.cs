@@ -1,25 +1,42 @@
 using Models.Props;
 
 public class Scene {
+    // Camera Variables
+    public readonly Vector camDir;
+    public readonly Vector camCenter;
+    public readonly Vector camUp;
+    public readonly double focalLength;
+    public readonly double fov;
+
     // Lighting and Color
     Vector dirToLight = new Vector();
     Vector ambient = new Vector();
     Vector lightColor = new Vector();
     Vector bgColor = new Vector();
-    string fileName;
 
     // Objects
     List<Prop> props = new();
 
-    public Scene(string outputFile = "scene.ppm") {
+    string fileName;
+
+    public Scene(Vector camDir, Vector camCenter, Vector camUp, double fov, string outputFile = "scene.ppm")
+    {
         fileName = outputFile;
+        this.fov = fov;
+
+        // Define camera
+        this.camCenter = camCenter;
+        this.camDir = camDir;
+        this.camUp = camUp;
+        focalLength = (camCenter - camDir).Magnitude();
     }
 
     public string GetFileName() {
         return fileName;
     }
 
-    public void SetLight(Vector dirToLight, Vector ambient, Vector lightColor) {
+    public void SetLight(Vector dirToLight, Vector ambient, Vector lightColor)
+    {
         this.dirToLight = dirToLight;
         this.dirToLight.Normalize();
         this.ambient = ambient;
