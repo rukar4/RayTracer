@@ -134,6 +134,11 @@ public static class SceneParser
             }
         }
 
+        if (currentProp != null)
+        {
+            props.Add(currentProp);
+        }
+
         Scene scene = new Scene(camDir, camCenter, camUp, fov, outputFile);
         scene.SetLight(dirToLight, ambient, lightColor);
         scene.SetBG(bgColor);

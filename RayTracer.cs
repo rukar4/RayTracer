@@ -12,8 +12,22 @@ class RayTracer
 
     static void Main()
     {
-        Scene scene1 = SceneParser.Parse("Scenes/scene1.txt");
-        List<Scene> scenes = [scene1];
+        // Clear the /res/ folder
+        string outputDir = "res";
+        if (Directory.Exists(outputDir))
+        {
+            foreach (string file in Directory.GetFiles(outputDir))
+            {
+                File.Delete(file);
+            }
+        }
+        else
+        {
+            Directory.CreateDirectory(outputDir);
+        }
+        
+        Scene parsed = SceneParser.Parse("Scenes/scene3.txt");
+        List<Scene> scenes = [parsed];
 
         double aspectRatio = 1.0;
         int width = 1080;
@@ -201,97 +215,103 @@ class RayTracer
 
 // Project 5 Code
 
-        // // Scene 1 Code
-        // Scene scene1 = new Scene("scene_1.ppm");
-        // scene1.SetLight(
-        //     new Vector(0.0, 1.0, 0.0), 
-        //     new Vector(0.0, 0.0, 0.0), 
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
-        // scene1.SetBG(bgColor);
-        
-        // Sphere purpleSphere = new Sphere(0.4);
-        // purpleSphere.SetColor(
-        //     0.7, 0.2, 0.1, 16.0,
-        //     new Vector(1.0, 0.0, 1.0), 
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
-        
-        // scene1.AddProp(purpleSphere);
+// // Scene 1 Code
+// Scene scene1 = new Scene("scene_1.ppm");
+// scene1.SetLight(
+//     new Vector(0.0, 1.0, 0.0), 
+//     new Vector(0.0, 0.0, 0.0), 
+//     new Vector(1.0, 1.0, 1.0)
+// );
+// scene1.SetBG(bgColor);
 
-        // // Scene 2 Code
-        // Scene scene2 = new Scene("scene_2.ppm");
-        // scene2.SetLight(
-        //     new Vector(1.0, 1.0, 1.0), 
-        //     new Vector(0.1, 0.1, 0.1),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
-        // scene2.SetBG(bgColor);
+// Sphere purpleSphere = new Sphere(0.4);
+// purpleSphere.SetColor(
+//     0.7, 0.2, 0.1, 16.0,
+//     new Vector(1.0, 0.0, 1.0), 
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // Sphere whiteSphere = new Sphere(0.15, 0.45, 0.0, -0.15);
-        // whiteSphere.SetColor(
-        //     0.8, 0.1, 0.3, 4.0,
-        //     new Vector(1.0, 1.0, 1.0), 
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// scene1.AddProp(purpleSphere);
 
-        // Sphere redSphere = new Sphere(0.2, 0.0, 0.0, -0.1);
-        // redSphere.SetColor(
-        //     0.6, 0.3, 0.1, 32.0,
-        //     new Vector(1.0, 0.0, 0.0),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// // Scene 2 Code
+// Scene scene2 = new Scene(
+//     new Vector(), 
+//     new Vector(0.0, 0.0, 1.0), 
+//     new Vector(0.0, 1.0, 0.0), 
+//     90.0, 
+//     "scene_2.ppm"
+// );
+// scene2.SetLight(
+//     new Vector(1.0, 1.0, 1.0), 
+//     new Vector(0.1, 0.1, 0.1),
+//     new Vector(1.0, 1.0, 1.0)
+// );
+// scene2.SetBG(bgColor);
 
-        // Sphere greenSphere = new Sphere(0.3, -0.6, 0.0, 0.0);
-        // greenSphere.SetColor(
-        //     0.7, 0.2, 0.1, 64.0,
-        //     new Vector(0.0, 1.0, 0.0),
-        //     new Vector(0.5, 1.0, 0.5)
-        // );
+// Sphere whiteSphere = new Sphere(0.15, 0.45, 0.0, -0.15);
+// whiteSphere.SetColor(
+//     0.8, 0.1, 0.3, 4.0,
+//     new Vector(1.0, 1.0, 1.0), 
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // Sphere blueSphere = new Sphere(10000.0, 0.0, -10000.5, 0.0);
-        // blueSphere.SetColor(
-        //     0.9, 0.0, 0.1, 16.0,
-        //     new Vector(0.0, 0.0, 1.0),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// Sphere redSphere = new Sphere(0.2, 0.0, 0.0, -0.1);
+// redSphere.SetColor(
+//     0.6, 0.3, 0.1, 32.0,
+//     new Vector(1.0, 0.0, 0.0),
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // scene2.AddProps(new List<Prop> { blueSphere, whiteSphere, redSphere, greenSphere });
+// Sphere greenSphere = new Sphere(0.3, -0.6, 0.0, 0.0);
+// greenSphere.SetColor(
+//     0.7, 0.2, 0.1, 64.0,
+//     new Vector(0.0, 1.0, 0.0),
+//     new Vector(0.5, 1.0, 0.5)
+// );
 
-        // Scene scene3 = new Scene("scene_3.ppm");
-        // scene3.SetLight(
-        //     new Vector(10.0, 10.0, -5.0), 
-        //     new Vector(0.1, 0.1, 0.1),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
-        // scene3.SetBG(new Vector());
+// Sphere blueSphere = new Sphere(10000.0, 0.0, -10000.5, 0.0);
+// blueSphere.SetColor(
+//     0.9, 0.0, 0.1, 16.0,
+//     new Vector(0.0, 0.0, 1.0),
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // Sphere mars = new Sphere(0.35, -0.3, -0.3, 0.5);
-        // mars.SetColor(
-        //     0.7, 0.2, 0.5, 3.0,
-        //     new Vector(0.9, 0.3, 0.1),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// scene2.AddProps(new List<Prop> { blueSphere, whiteSphere, redSphere, greenSphere });
 
-        // Sphere earth = new Sphere(0.4, 0.3, -0.1, 0.0);
-        // earth.SetColor(
-        //     0.8, 0.5, 0.6, 64.0,
-        //     new Vector(0.0, 0.0, 1.0),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// Scene scene3 = new Scene("scene_3.ppm");
+// scene3.SetLight(
+//     new Vector(10.0, 10.0, -5.0), 
+//     new Vector(0.1, 0.1, 0.1),
+//     new Vector(1.0, 1.0, 1.0)
+// );
+// scene3.SetBG(new Vector());
 
-        // Sphere venus = new Sphere(0.3, -0.1, 0.55, -0.4);
-        // venus.SetColor(
-        //     0.5, 0.1, 0.8, 4.0,
-        //     new Vector(0.9, 0.85, 0.75), 
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// Sphere mars = new Sphere(0.35, -0.3, -0.3, 0.5);
+// mars.SetColor(
+//     0.7, 0.2, 0.5, 3.0,
+//     new Vector(0.9, 0.3, 0.1),
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // Sphere mercury = new Sphere(0.25, 0.65, 0.8, -0.55);
-        // mercury.SetColor(
-        //     0.8, 0.1, 0.9, 4.0,
-        //     new Vector(0.6, 0.4, 0.2),
-        //     new Vector(1.0, 1.0, 1.0)
-        // );
+// Sphere earth = new Sphere(0.4, 0.3, -0.1, 0.0);
+// earth.SetColor(
+//     0.8, 0.5, 0.6, 64.0,
+//     new Vector(0.0, 0.0, 1.0),
+//     new Vector(1.0, 1.0, 1.0)
+// );
 
-        // scene3.AddProps(new List<Prop> { mars, earth, venus, mercury });
+// Sphere venus = new Sphere(0.3, -0.1, 0.55, -0.4);
+// venus.SetColor(
+//     0.5, 0.1, 0.8, 4.0,
+//     new Vector(0.9, 0.85, 0.75), 
+//     new Vector(1.0, 1.0, 1.0)
+// );
+
+// Sphere mercury = new Sphere(0.25, 0.65, 0.8, -0.55);
+// mercury.SetColor(
+//     0.8, 0.1, 0.9, 4.0,
+//     new Vector(0.6, 0.4, 0.2),
+//     new Vector(1.0, 1.0, 1.0)
+// );
+
+// scene3.AddProps(new List<Prop> { mars, earth, venus, mercury });

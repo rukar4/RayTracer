@@ -1,0 +1,55 @@
+OutputFile scene_3.ppm
+
+CameraDirection 0 0 0
+CameraCenter 0 0 1
+CameraUp 0 1 0
+FieldOfView 90
+
+DirectionToLight 10.0 10.0 -5.0
+AmbientLight 0.1 0.1 0.1
+LightColor 1.0 1.0 1.0
+
+
+# Earth
+Sphere
+  Center 0.3 -0.1 0.0
+  Radius 0.4
+  Kd 0.8
+  Ks 0.5
+  Ka 0.6
+  Kgls 64.0
+  Od 0.0 0.0 1.0
+  Os 1.0 1.0 1.0
+
+# Venus
+Sphere
+  Center -0.1 0.55 -0.4
+  Radius 0.3
+  Kd 0.5
+  Ks 0.1
+  Ka 0.8
+  Kgls 4.0
+  Od 0.9 0.85 0.75
+  Os 1.0 1.0 1.0
+
+# Mars
+Sphere
+  Center -0.3 -0.3 0.5
+  Radius .35
+  Kd 0.7
+  Ks 0.2
+  Ka 0.5
+  Kgls 3.0
+  Od 0.9 0.3 0.1
+  Os 1.0 1.0 1.0
+
+# Mercury
+Sphere
+  Center 0.65 0.8 -0.55
+  Radius 0.25
+  Kd 0.8
+  Ks 0.1
+  Ka 0.9
+  Kgls 4.0
+  Od 0.6 0.4 0.2
+  Os 1.0 1.0 1.0

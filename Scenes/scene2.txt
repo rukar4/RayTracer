@@ -1,6 +1,8 @@
-CameraLookAt 0 0 0
-CameraLookFrom 0 0 1
-CameraLookUp 0 1 0
+OutputFile scene_2.ppm
+
+CameraDirection 0 0 0
+CameraCenter 0 0 1
+CameraUp 0 1 0
 FieldOfView 90
 
 DirectionToLight 1.0 1.0 1.0
@@ -16,8 +18,8 @@ Sphere
   Kd 0.8
   Ks 0.1
   Ka 0.3
-  Od 1.0, 1.0, 1.0
-  Os 1.0, 1.0, 1.0
+  Od 1.0 1.0 1.0
+  Os 1.0 1.0 1.0
   Kgls 4.0
 
 # red sphere
