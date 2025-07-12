@@ -1,14 +1,17 @@
 ﻿using Models.Props;
 
-class RayTracer {
-    static void Main() {
-        Vector bgColor = new Vector(0.2, 0.2, 0.2);
-        Vector white = new Vector(1.0, 1.0, 1.0);
-        Vector red = new Vector(1.0, 0.0, 0.0);
-        Vector green = new Vector(0.0, 1.0, 0.0);
-        Vector blue = new Vector(0.0, 0.0, 1.0);
-        Vector yellow = new Vector(1.0, 1.0, 0.0);
-        Vector barkBrown = new Vector(0.361, 0.2, 0.09);
+class RayTracer
+{
+    private static Vector bgColor = new Vector(0.2, 0.2, 0.2);
+    private static Vector white = new Vector(1.0, 1.0, 1.0);
+    private static Vector red = new Vector(1.0, 0.0, 0.0);
+    private static Vector green = new Vector(0.0, 1.0, 0.0);
+    private static Vector blue = new Vector(0.0, 0.0, 1.0);
+    private static Vector yellow = new Vector(1.0, 1.0, 0.0);
+    private static Vector barkBrown = new Vector(0.361, 0.2, 0.09);
+
+    static void Main()
+    {
 
         // Program 6 Scene 1
         Scene scene4 = new Scene("scene_4.ppm");
@@ -86,14 +89,15 @@ class RayTracer {
         reflSphr3.SetRefl(0.9);
 
         scene6.AddProps(new List<Prop> { reflTri3, brnSph, bluSph2, redSph2, reflSphr3, grnSph2 });
-        
-        List<Scene> scenes = [scene4, scene5, scene6];
+
+        Scene scene1 = GetScene1();
+        List<Scene> scenes = [scene1, scene4, scene5, scene6];
 
         double aspectRatio = 1.0;
         int width = 1080;
 
         // Find image height using aspect ratio.
-        int height = (int) (width / aspectRatio);
+        int height = (int)(width / aspectRatio);
         height = height < 1 ? 1 : height;
 
         // Field of View
@@ -108,7 +112,7 @@ class RayTracer {
         Vector camDir = new Vector(0, 0, 0);
         Vector camCenter = new Vector(0, 0, 1);
         Vector camUp = new Vector(0, 1, 0);
-        
+
         // Viewport vectors
         Vector viewportU = new Vector(viewportWidth, 0, 0);
         Vector viewportV = new Vector(0, -viewportHeight, 0);
@@ -121,13 +125,16 @@ class RayTracer {
         Vector viewPortUpperLeft = camCenter - new Vector(0, 0, focalLength) - viewportU / 2 - viewportV / 2;
         Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
 
-        foreach (Scene scene in scenes) {
-            PPMWriter writer = new PPMWriter(scene.GetFileName(), height, width);
-            for (int i = 0; i < height; ++i) {
+        foreach (Scene scene in scenes)
+        {
+            PPMWriter writer = new PPMWriter($"Scenes/images/{scene.GetFileName()}", height, width);
+            for (int i = 0; i < height; ++i)
+            {
                 Console.Write($"\rScanlines remaining: {height - i} ");
                 Console.Out.Flush();
 
-                for (int j = 0; j < width; ++j) {
+                for (int j = 0; j < width; ++j)
+                {
                     var pixelCenter = startPixel + (i * dv) + (j * du);
                     var rayDirection = pixelCenter - camCenter;
 
@@ -145,22 +152,49 @@ class RayTracer {
         }
     }
 
-    public static Vector GetPixel(Ray ray, Scene scene, Vector camCenter) {
+    private static Vector GetPixel(Ray ray, Scene scene, Vector camCenter)
+    {
         Vector color = scene.GetBG();
-        
+
         double closest = double.MaxValue;
-        foreach (Prop prop in scene.GetProps()) {
+        foreach (Prop prop in scene.GetProps())
+        {
             Vector? point = prop.GetIntersection(ray);
-            if (point != null) {
+            if (point != null)
+            {
                 double distance = (point - ray.origin).Magnitude();
 
-                if (distance < closest) {
+                if (distance < closest)
+                {
                     closest = distance;
                     color = prop.GetSurfaceColor(point, camCenter, scene);
                 }
             }
         }
         return color;
+    }
+
+    // Scenes
+    private static Scene GetScene1()
+    {
+        // Scene 1 Code
+        Scene scene1 = new Scene("scene_1.ppm");
+        scene1.SetLight(
+            new Vector(0.0, 1.0, 0.0),
+            new Vector(0.0, 0.0, 0.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+        scene1.SetBG(bgColor);
+
+        Sphere purpleSphere = new Sphere(0.4);
+        purpleSphere.SetColor(
+            0.7, 0.2, 0.1, 16.0,
+            new Vector(1.0, 0.0, 1.0),
+            new Vector(1.0, 1.0, 1.0)
+        );
+
+        scene1.AddProp(purpleSphere);
+        return scene1;
     }
 }
 
