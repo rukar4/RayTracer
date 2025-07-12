@@ -1,0 +1,81 @@
+OutputFile scene_6.ppm
+
+CameraDirection 0 0 0
+CameraCenter 0 0 1
+CameraUp 0 1 0
+FieldOfView 90
+
+DirectionToLight 0.0 0.5 1.0
+AmbientLight 0.1 0.1 0.1
+LightColor 1.0 1.0 1.0
+BackgroundColor 0.2 0.2 0.2
+
+# reflective sphere
+Sphere
+  Center 0.0 0.25 -0.3
+  Radius 0.2
+  Kd 0.0
+  Ks 0.1
+  Ka 0.1
+  Kgls 10.0
+  Od 0.75 0.75 0.75
+  Os 1.0 1.0 1.0
+  Refl 0.9
+
+# red sphere
+Sphere
+  Center 0.3 0.1 -0.5
+  Radius 0.2
+  Kd 0.8
+  Ks 0.8
+  Ka 0.1
+  Kgls 32.0
+  Od 1.0 0.0 0.0
+  Os 1.0 1.0 1.0
+  Refl 0.2
+
+# blue sphere
+Sphere
+  Center -0.3 0.1 -0.5
+  Radius 0.2
+  Kd 0.9
+  Ks 1.0
+  Ka 0.1
+  Kgls 4.0
+  Od 0.0 0.0 1.0
+  Os 1.0 1.0 1.0
+
+# green sphere
+Sphere
+  Center 0.0 -0.15 -0.3
+  Radius 0.2
+  Kd 0.7
+  Ks 0.5
+  Ka 0.1
+  Kgls 2.0
+  Od 0.0 1.0 0.0
+  Os 1.0 1.0 1.0
+
+# brown sphere
+Sphere
+  Center 0.0 0.8 -0.3
+  Radius 0.2
+  Kd 0.7
+  Ks 0.5
+  Ka 0.1
+  Kgls 64.0
+  Od 0.361 0.2 0.09
+  Os 1.0 1.0 1.0
+
+# reflective triangle
+Triangle
+  0.0 -0.5 0.25
+  -1.6 0.2 -1.5
+  1.6 0.2 -1.5
+  Kd 0.0
+  Ks 0.1
+  Ka 0.1
+  Kgls 10.0
+  Od 0.75 0.75 0.75
+  Os 1.0 1.0 1.0
+  Refl 0.9
