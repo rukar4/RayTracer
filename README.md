@@ -17,6 +17,7 @@ Using another application such as [ImageMagick](https://imagemagick.org) is reco
 > Note: The `--no-shadows` tag prevents the tracer from sending shadow rays from props to see if it is in shadow.
 This means that shadows from other props will not appear; however, shading on a prop will still be visible as that is calculated using light rays from the scene.
 
+---
 
 ### Scene File Format
 
