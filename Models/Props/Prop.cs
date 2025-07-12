@@ -12,7 +12,7 @@ namespace Models.Props
         public abstract Vector GetNormal(Vector point);
         public abstract Vector? GetIntersection(Ray ray);
 
-        public Vector GetSurfaceColor(Vector point, Vector origin, Scene scene, int depth = 0)
+        public Vector GetSurfaceColor(Vector point, Vector origin, Scene scene, int depth = 0, bool shadows = true)
         {
             Vector L = scene.GetLightDir();
 
@@ -25,14 +25,17 @@ namespace Models.Props
                 kd * scene.GetLightColor() * od * Math.Max(0, N.Dot(L)) +
                 ks * scene.GetLightColor() * os * Math.Pow(Math.Max(0, R.Dot(V)), kgls);
 
-            // Shadow detection
-            Ray shadowRay = new Ray(point, L);
-            foreach (Prop prop in scene.GetProps())
+            if (shadows)
             {
-                if (prop != this && prop.GetIntersection(shadowRay) != null)
+                // Shadow detection
+                Ray shadowRay = new Ray(point, L);
+                foreach (Prop prop in scene.GetProps())
                 {
-                    color *= 0.5;
-                    break;
+                    if (prop != this && prop.GetIntersection(shadowRay) != null)
+                    {
+                        color *= 0.5;
+                        break;
+                    }
                 }
             }
 

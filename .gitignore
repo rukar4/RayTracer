@@ -2,4 +2,6 @@
 /bin
 /res
 
+*.old*
+
 *.pptx
