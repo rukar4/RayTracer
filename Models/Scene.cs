@@ -2,8 +2,9 @@ using Models.Props;
 
 public class Scene {
     // Camera Variables
-    public readonly Vector camDir;
     public readonly Vector camCenter;
+    public readonly Vector camRight;
+    public readonly Vector camForward;
     public readonly Vector camUp;
     public readonly double focalLength;
     public readonly double fov;
@@ -19,16 +20,19 @@ public class Scene {
 
     string fileName;
 
-    public Scene(Vector camDir, Vector camCenter, Vector camUp, double fov, string outputFile = "scene.ppm")
+    public Scene(Vector camLookAt, Vector camCenter, Vector camHintUp, double fov, string outputFile = "scene.ppm")
     {
         fileName = outputFile;
         this.fov = fov;
 
-        // Define camera
         this.camCenter = camCenter;
-        this.camDir = camDir;
-        this.camUp = camUp;
-        focalLength = (camCenter - camDir).Magnitude();
+
+        // Graham-Schmidt Orthogonalization
+        this.camForward = (camLookAt - camCenter).UnitVector();
+        this.camRight = camForward.Cross(camHintUp).UnitVector();
+        this.camUp = camRight.Cross(camForward);
+
+        focalLength = (camLookAt - camCenter).Magnitude();
     }
 
     public string GetFileName() {

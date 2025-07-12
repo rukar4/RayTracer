@@ -1,6 +1,6 @@
 OutputFile scene_4.ppm
 
-CameraDirection 0 0 0
+CameraLookAt 0 0 0
 CameraCenter 0 0 1
 CameraUp 0 1 0
 FieldOfView 90

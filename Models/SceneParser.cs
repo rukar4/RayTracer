@@ -8,7 +8,7 @@ public static class SceneParser
         string outputFile = "scene.ppm";
 
         // Camera Variables
-        Vector camDir = new Vector();
+        Vector camLookAt = new Vector();
         Vector camCenter = new Vector();
         Vector camUp = new Vector();
         double fov = 90.0;
@@ -41,8 +41,8 @@ public static class SceneParser
                     outputFile = tokens[1];
                     break;
 
-                case "CameraDirection":
-                    camDir = ParseVector(tokens);
+                case "CameraLookAt":
+                    camLookAt = ParseVector(tokens);
                     break;
 
                 case "CameraCenter":
@@ -151,7 +151,7 @@ public static class SceneParser
             props.Add(currentProp);
         }
 
-        Scene scene = new Scene(camDir, camCenter, camUp, fov, outputFile);
+        Scene scene = new Scene(camLookAt, camCenter, camUp, fov, outputFile);
         scene.SetLight(dirToLight, ambient, lightColor);
         scene.SetBG(bgColor);
         scene.AddProps(props);

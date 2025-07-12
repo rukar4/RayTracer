@@ -50,26 +50,26 @@ class RayTracer
         int height = (int)(width / aspectRatio);
         height = height < 1 ? 1 : height;
 
-
         foreach (string sceneFile in sceneFiles)
         {
             try
             {
                 Scene scene = SceneParser.Parse(sceneFile);
+
                 // Compute viewport size
                 double viewportHeight = 2.0 * Math.Tan(scene.fov * Math.PI / 180.0 / 2);
                 double viewportWidth = viewportHeight;
 
                 // Viewport vectors
-                Vector viewportU = new Vector(viewportWidth, 0, 0);
-                Vector viewportV = new Vector(0, -viewportHeight, 0);
+                Vector viewportU = scene.camRight * viewportWidth;
+                Vector viewportV = scene.camUp * -viewportHeight;
 
                 // Pixel sizes
                 Vector du = viewportU / width;
                 Vector dv = viewportV / height;
 
                 // Compute upper left pixel
-                Vector viewPortUpperLeft = scene.camCenter - new Vector(0, 0, scene.focalLength) - viewportU / 2 - viewportV / 2;
+                Vector viewPortUpperLeft = scene.camCenter + scene.camForward * scene.focalLength - viewportU / 2 - viewportV / 2;
                 Vector startPixel = viewPortUpperLeft + (du + dv) / 2;
 
                 // Intialize writer
